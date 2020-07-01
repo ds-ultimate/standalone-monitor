@@ -13,7 +13,7 @@ class CreateSshTable extends Migration
      */
     public function up()
     {
-        Schema::create('ssh', function (Blueprint $table) {
+        Schema::create('sshes', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->integer('num_sessions');

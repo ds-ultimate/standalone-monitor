@@ -13,7 +13,7 @@ class CreateSqlTable extends Migration
      */
     public function up()
     {
-        Schema::create('sql', function (Blueprint $table) {
+        Schema::create('sqls', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->bigInteger('bytes_received');
@@ -26,7 +26,8 @@ class CreateSqlTable extends Migration
             $table->bigInteger('innodb_data_written');
             $table->bigInteger('innodb_data_reads');
             $table->bigInteger('innodb_data_writes');
-            $table->bigInteger('queries');
+            $table->bigInteger('queries');;
+            $table->bigInteger('connections');
             
             $table->integer('innodb_buffer_pool_bytes_data');
             $table->integer('innodb_buffer_pool_pages_data');

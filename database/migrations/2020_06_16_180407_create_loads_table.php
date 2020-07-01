@@ -15,9 +15,9 @@ class CreateLoadsTable extends Migration
     {
         Schema::create('loads', function (Blueprint $table) {
             $table->id();
-            $table->float('1min');
-            $table->float('5min');
-            $table->float('15min');
+            $table->float('oneMin');
+            $table->float('fiveMin');
+            $table->float('fifteenMin');
             $table->timestamps();
         });
     }
