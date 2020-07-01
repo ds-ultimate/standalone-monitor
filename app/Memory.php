@@ -14,9 +14,14 @@ class Memory extends Model
         'used_cache',
         'free',
     ];
-    
+
     protected $dates = [
         'updated_at',
         'created_at',
     ];
+
+    public function server()
+    {
+        return $this->belongsTo('App\Server');
+    }
 }

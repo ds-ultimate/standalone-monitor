@@ -15,10 +15,13 @@ class CreateLoadsTable extends Migration
     {
         Schema::create('loads', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('server_id')->default(1);
             $table->float('oneMin');
             $table->float('fiveMin');
             $table->float('fifteenMin');
             $table->timestamps();
+
+            $table->foreign('server_id')->references('id')->on('servers');
         });
     }
 

@@ -15,9 +15,14 @@ class DiskUsage extends Model
         'inodes_all',
         'inodes_used',
     ];
-    
+
     protected $dates = [
         'updated_at',
         'created_at',
     ];
+
+    public function server()
+    {
+        return $this->belongsTo('App\Server');
+    }
 }

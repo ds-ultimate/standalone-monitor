@@ -15,6 +15,7 @@ class CreateMemoriesTable extends Migration
     {
         Schema::create('memories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('server_id')->default(1);
             $table->bigInteger('mem_total');
             $table->bigInteger('file_cache_size');
             $table->bigInteger('used_programms');
@@ -22,6 +23,8 @@ class CreateMemoriesTable extends Migration
             $table->bigInteger('used_cache');
             $table->bigInteger('free');
             $table->timestamps();
+
+            $table->foreign('server_id')->references('id')->on('servers');
         });
     }
 

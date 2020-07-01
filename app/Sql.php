@@ -33,9 +33,14 @@ class Sql extends Model
         'qcache_not_cached',
         'qcache_total_blocks',
     ];
-    
+
     protected $dates = [
         'updated_at',
         'created_at',
     ];
+
+    public function server()
+    {
+        return $this->belongsTo('App\Server');
+    }
 }

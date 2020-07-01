@@ -15,6 +15,7 @@ class CreateCpuTable extends Migration
     {
         Schema::create('cpus', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('server_id')->default(1);
             $table->timestamps();
             $table->string("name");
             $table->bigInteger('all');
@@ -23,6 +24,8 @@ class CreateCpuTable extends Migration
             $table->bigInteger('kernel');
             $table->bigInteger('io_wait');
             $table->bigInteger('idle');
+
+            $table->foreign('server_id')->references('id')->on('servers');
         });
     }
 

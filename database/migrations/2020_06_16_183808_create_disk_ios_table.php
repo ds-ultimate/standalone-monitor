@@ -15,12 +15,15 @@ class CreateDiskIosTable extends Migration
     {
         Schema::create('disk_ios', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('server_id')->default(1);
             $table->string('diskname');
             $table->bigInteger('read_io');
             $table->bigInteger('read_sector');
             $table->bigInteger('write_io');
             $table->bigInteger('write_sector');
             $table->timestamps();
+
+            $table->foreign('server_id')->references('id')->on('servers');
         });
     }
 

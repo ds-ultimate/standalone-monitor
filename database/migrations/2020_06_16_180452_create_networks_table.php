@@ -15,12 +15,15 @@ class CreateNetworksTable extends Migration
     {
         Schema::create('networks', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('server_id')->default(1);
             $table->string('interface');
             $table->bigInteger('sent_bytes');
             $table->bigInteger('received_bytes');
             $table->bigInteger('sent_packets');
             $table->bigInteger('received_packets');
             $table->timestamps();
+
+            $table->foreign('server_id')->references('id')->on('servers');
         });
     }
 

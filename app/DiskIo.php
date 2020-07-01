@@ -13,9 +13,14 @@ class DiskIo extends Model
         'write_io',
         'write_sector',
     ];
-    
+
     protected $dates = [
         'updated_at',
         'created_at',
     ];
+
+    public function server()
+    {
+        return $this->belongsTo('App\Server');
+    }
 }

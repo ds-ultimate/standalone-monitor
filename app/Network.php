@@ -13,9 +13,14 @@ class Network extends Model
         'sent_packets',
         'received_packets',
     ];
-    
+
     protected $dates = [
         'updated_at',
         'created_at',
     ];
+
+    public function server()
+    {
+        return $this->belongsTo('App\Server');
+    }
 }

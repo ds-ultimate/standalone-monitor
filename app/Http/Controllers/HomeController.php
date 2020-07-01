@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Server;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +24,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $servers = Server::all();
+        if ($servers->count() == 0){
+            Server::saveOwnServer();
+        }
+        return view('home', compact('servers'));
     }
 }

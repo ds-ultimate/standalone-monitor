@@ -15,6 +15,7 @@ class CreateDiskUsagesTable extends Migration
     {
         Schema::create('disk_usages', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('server_id')->default(1);
             $table->string('diskname');
             $table->string('mounted_at');
             $table->bigInteger('kbytes_all');
@@ -23,6 +24,8 @@ class CreateDiskUsagesTable extends Migration
             $table->bigInteger('inodes_all');
             $table->bigInteger('inodes_used');
             $table->timestamps();
+
+            $table->foreign('server_id')->references('id')->on('servers');
         });
     }
 

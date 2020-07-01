@@ -15,8 +15,11 @@ class CreateSshTable extends Migration
     {
         Schema::create('sshes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('server_id')->default(1);
             $table->timestamps();
             $table->integer('num_sessions');
+
+            $table->foreign('server_id')->references('id')->on('servers');
         });
     }
 
