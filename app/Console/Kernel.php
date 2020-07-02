@@ -24,7 +24,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        /*
+         * Update WorldData
+         */
+        $schedule->command("save:all")
+            ->everyFiveMinutes()
+            ->appendOutputTo("storage/logs/cron-critical.log");
+
     }
 
     /**
