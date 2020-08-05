@@ -19,6 +19,11 @@ Route::get('/', function () {
     }
     return view('welcome');
 })->name('index');
+
+Route::get('/server/{server}', 'ServerController@index')->name('server');
+Route::post('/server/{server}/currentLoad', 'ServerController@currentLoad')->name('currentLoad');
+Route::post('/server/{server}/currentSsh', 'ServerController@currentSsh')->name('currentSsh');
+
 Route::get('/test', function () {
     return view('test');
 });

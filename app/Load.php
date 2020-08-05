@@ -9,7 +9,7 @@ class Load extends Model
     protected $fillable = [
         'oneMin',
         'fiveMin',
-        'fifteen',
+        'fifteenMin',
     ];
 
     protected $dates = [

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Khill\Lavacharts\Lavacharts;
 
 class Memory extends Model
 {
