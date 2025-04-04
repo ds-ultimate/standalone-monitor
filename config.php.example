@@ -1,0 +1,21 @@
+<?php
+
+
+$MAX_POINTS = 10000;
+$GRAFANA_API_KEY = "XXXXXXXXXXXXXXXXX";
+
+
+$MYSQL_HOSTNAME = "localhost";
+$MYSQL_PORT = "3701";
+$MYSQL_DB_NAME = "XXXXXXXXXXXXXXXXX";
+$MYSQL_USER_NAME = "XXXXXXXXXXXXXXXXX";
+$MYSQL_USER_PASS = "XXXXXXXXXXXXXXXXX";
+
+$SERVER_CONFIGURATION = [
+    0 => [
+        "name" => "Main Server",
+        "key" => "XXXXXXXXXXXXXXXXX",
+        "has" => ["cpu", "diskio", "diskusage", "load", "memory", "network", "sql", "ssh"],
+    ],
+];
+

@@ -1,0 +1,17 @@
+<?php
+
+$API_KEY = "XXXXXXXXXX";
+$SERVER_ID = 0;
+$BASE_URL = "XXXXXXXXXX";
+
+// MYSQL config needs be filled if sql collector is enabled
+$MYSQL_HOSTNAME = "localhost";
+$MYSQL_PORT = "3701";
+$MYSQL_USER_NAME = "XXXXXXXXXX";
+$MYSQL_USER_PASS = "XXXXXXXXXX";
+
+// enables / disables various data collectors
+$SERVER_CAPABILITIES = [
+    "cpu", "diskio", "diskusage", "load", "memory", "network", "sql", "ssh"
+];
+
