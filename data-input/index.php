@@ -107,6 +107,10 @@ if($lastZoomEntry === false || $lastZoomEntry === null) {
     $zoombase = $sorted_zoom[0];
 } else {
     $lastTime = $lastZoomEntry["time"];
+    if($lastTime >= $curTime) {
+        die("Time duplicate");
+    }
+
     $zoombase = $sorted_zoom[count($sorted_zoom) - 1];
 
     foreach($sorted_zoom as $zoKey) {

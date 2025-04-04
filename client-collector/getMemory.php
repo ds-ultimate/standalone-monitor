@@ -2,19 +2,21 @@
 
 // collects the current memory usage
 
+
+function get_memory_data_inKB($val, $strExp) {
+    switch($strExp) {
+        case "MB":
+            return intval(1000 * floatval($val));
+        case "GB":
+            return intval(1000 * 1000 * floatval($val));
+        case "kB":
+        default:
+            return intval($val);
+    }
+}
+
 function get_memory_data()
 {
-    function inKB($val, $strExp) {
-        switch($strExp) {
-            case "MB":
-                return intval(1000 * floatval($val));
-            case "GB":
-                return intval(1000 * 1000 * floatval($val));
-            case "kB":
-            default:
-                return intval($val);
-        }
-    }
 
     /*
      * Memory /proc/meminfo
@@ -50,20 +52,20 @@ function get_memory_data()
         
         if(array_key_exists($exp[0], $mapping)) {
             //will be written directly to Database
-            $result_data[$mapping[$exp[0]]] = inKB($exp[1], $exp[2]);
+            $result_data[$mapping[$exp[0]]] = get_memory_data_inKB($exp[1], $exp[2]);
         }
         switch($exp[0]) {
             case "Active(file):":
             case "Inactive(file):":
-                $fileCache += inKB($exp[1], $exp[2]);
+                $fileCache += get_memory_data_inKB($exp[1], $exp[2]);
                 break;
             case "MemTotal:":
-                $prog += inKB($exp[1], $exp[2]);
+                $prog += get_memory_data_inKB($exp[1], $exp[2]);
                 break;
             case "MemFree:":
             case "Buffers:":
             case "Cached:":
-                $prog -= inKB($exp[1], $exp[2]);
+                $prog -= get_memory_data_inKB($exp[1], $exp[2]);
                 break;
         }
     }

@@ -15,3 +15,8 @@ $SERVER_CAPABILITIES = [
     "cpu", "diskio", "diskusage", "load", "memory", "network", "sql", "ssh"
 ];
 
+$CRON_INTERVAL = 60;
+$SEND_INTERVAL = 1;
+
+
+$AUTH_HEADER = null;

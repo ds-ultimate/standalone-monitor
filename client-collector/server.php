@@ -1,8 +1,8 @@
 <?php
 
 include_once "config.php";
-include_once "../shared/helper_functions.php";
-include_once "../shared/mysql_interface.php";
+include_once "shared/helper_functions.php";
+include_once "shared/mysql_interface.php";
 include_once "getCpu.php";
 include_once "getDiskIo.php";
 include_once "getDiskUsage.php";
@@ -31,26 +31,41 @@ $COLLECTOR_FUNCTIONS = [
 ];
 
 
-$data = [
-    "time" => time(),
-];
+$startTime = time();
+$diff = 0;
+$curTime = time();
 
-foreach($SERVER_CAPABILITIES as $cap) {
-    $data[$cap] = call_user_func($COLLECTOR_FUNCTIONS[$cap]);
+while($diff < $CRON_INTERVAL) {
+    $data = [
+        "time" => $curTime,
+    ];
+    
+    foreach($SERVER_CAPABILITIES as $cap) {
+        $data[$cap] = call_user_func($COLLECTOR_FUNCTIONS[$cap]);
+    }
+    
+    $authPart = "";
+    if($AUTH_HEADER !== null) {
+        $authPart = "Authorisation: $AUTH_HEADER\r\n";
+    }
+    
+    $options = [
+        'http' => [
+            'header' => "Content-type: application/json\r\nAPI-KEY: $API_KEY\r\n$authPart",
+            'method' => 'POST',
+            'content' => json_encode($data),
+        ],
+    ];
+    
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    if ($result === false) {
+        /* Handle error */
+    }
+    
+    echo $curTime . "//" . json_encode($result) . "\n";
+
+    sleep($SEND_INTERVAL);
+    $curTime = time();
+    $diff = $curTime - $startTime;
 }
-
-$options = [
-    'http' => [
-        'header' => "Content-type: application/json\r\nAPI-KEY: $API_KEY\r\n",
-        'method' => 'POST',
-        'content' => json_encode($data),
-    ],
-];
-
-$context = stream_context_create($options);
-$result = file_get_contents($url, false, $context);
-if ($result === false) {
-    /* Handle error */
-}
-
-var_dump($result);
