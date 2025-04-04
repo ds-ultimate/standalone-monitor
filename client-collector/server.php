@@ -46,7 +46,7 @@ while($diff < $CRON_INTERVAL) {
     
     $authPart = "";
     if($AUTH_HEADER !== null) {
-        $authPart = "Authorisation: $AUTH_HEADER\r\n";
+        $authPart = "Authorization: $AUTH_HEADER\r\n";
     }
     
     $options = [
