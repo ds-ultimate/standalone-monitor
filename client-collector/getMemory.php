@@ -70,7 +70,7 @@ function get_memory_data()
         }
     }
     $result_data["file_cache_size"] = $fileCache;
-    $result_data["used_programms"] = $prog;
+    $result_data["used_programs"] = $prog;
     
     fclose($statsFile);
 

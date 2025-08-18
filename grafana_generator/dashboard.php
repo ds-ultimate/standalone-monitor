@@ -34,43 +34,6 @@ class Dashboard extends LayoutManager {
     public function generate() {
         $rawData = "
 {
-    \"__inputs\": [
-        {
-            \"name\": \"DS_YESOREYERAM-INFINITY-DATASOURCE\",
-            \"label\": \"yesoreyeram-infinity-datasource\",
-            \"description\": \"\",
-            \"type\": \"datasource\",
-            \"pluginId\": \"yesoreyeram-infinity-datasource\",
-            \"pluginName\": \"Infinity\"
-        }
-    ],
-    \"__elements\": {},
-    \"__requires\": [
-        {
-            \"type\": \"panel\",
-            \"id\": \"gauge\",
-            \"name\": \"Gauge\",
-            \"version\": \"\"
-        },
-        {
-            \"type\": \"grafana\",
-            \"id\": \"grafana\",
-            \"name\": \"Grafana\",
-            \"version\": \"11.6.0\"
-        },
-        {
-            \"type\": \"panel\",
-            \"id\": \"timeseries\",
-            \"name\": \"Time series\",
-            \"version\": \"\"
-        },
-        {
-            \"type\": \"datasource\",
-            \"id\": \"yesoreyeram-infinity-datasource\",
-            \"name\": \"Infinity\",
-            \"version\": \"3.2.0\"
-        }
-    ],
     \"annotations\": {
         \"list\": [
             {
@@ -88,10 +51,8 @@ class Dashboard extends LayoutManager {
         ]
     },
     \"editable\": true,
-    \"fiscalYearStartMonth\": 0,
-    \"graphTooltip\": 0,
     \"id\": null,
-    \"links\": [],
+    \"uid\": null,
     \"panels\": [],
     \"refresh\": \"5s\",
     \"schemaVersion\": 41,

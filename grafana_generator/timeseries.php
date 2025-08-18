@@ -5,13 +5,44 @@ require_once "datasource.php";
 
 class Timeseries extends DashboardPanel {
     private Datasource $datasource;
+    private $unit;
+    private $graphType = "line";
+    private $showPoints = "auto";
+    private $stackingMode = "none";
+    private $tooltipMode = "single";
 
     public function __construct($title, Datasource $datasource)
     {
         parent::__construct($title);
 
         $this->datasource = $datasource;
+        $this->unit = null;
         $this->setSize(18, 8);
+    }
+
+    public function setUnit($newUnit) {
+        $this->unit = $newUnit;
+        return $this;
+    }
+
+    public function setGraphType($newGraphType) {
+        $this->graphType = $newGraphType;
+        return $this;
+    }
+
+    public function setDisplayPoints($newVal) {
+        $this->showPoints = $newVal;
+        return $this;
+    }
+
+    public function setStackingMode($newMode) {
+        $this->stackingMode = $newMode;
+        return $this;
+    }
+
+    public function setTooltipMode($newMode) {
+        $this->tooltipMode = $newMode;
+        return $this;
     }
 
     public function generate() {
@@ -30,7 +61,7 @@ class Timeseries extends DashboardPanel {
                 \"axisPlacement\": \"auto\",
                 \"barAlignment\": 0,
                 \"barWidthFactor\": 0.6,
-                \"drawStyle\": \"line\",
+                \"drawStyle\": \"{$this->graphType}\",
                 \"fillOpacity\": 0,
                 \"gradientMode\": \"none\",
                 \"hideFrom\": {
@@ -45,11 +76,11 @@ class Timeseries extends DashboardPanel {
                 \"scaleDistribution\": {
                     \"type\": \"linear\"
                 },
-                \"showPoints\": \"auto\",
+                \"showPoints\": \"{$this->showPoints}\",
                 \"spanNulls\": false,
                 \"stacking\": {
                     \"group\": \"A\",
-                    \"mode\": \"none\"
+                    \"mode\": \"{$this->stackingMode}\"
                 },
                 \"thresholdsStyle\": {
                     \"mode\": \"off\"
@@ -80,7 +111,7 @@ class Timeseries extends DashboardPanel {
         },
         \"tooltip\": {
             \"hideZeros\": false,
-            \"mode\": \"single\",
+            \"mode\": \"{$this->tooltipMode}\",
             \"sort\": \"none\"
         }
     },
@@ -93,6 +124,11 @@ class Timeseries extends DashboardPanel {
             die("internal error timeseries\n");
         }
         $tmp = array_merge($tmp, $this->datasource->generate());
+
+        if($this->unit !== null) {
+            $tmp["fieldConfig"]["defaults"]["unit"] = $this->unit;
+        }
+
         return $this->addIdTitlePos($tmp);
     }
 }

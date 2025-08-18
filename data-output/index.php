@@ -24,9 +24,6 @@ if($valid_date_to <= $valid_date_from) {
     die("To must be bigger than from");
 }
 
-$raw_path = explode("?", $_SERVER["REQUEST_URI"], 2)[0];
-
-
 if(! isset($_GET["table"]) || ! isset($_GET["row"])) {
     http_response_code(404);
     die();
@@ -123,6 +120,9 @@ while ($row = $result->fetch_assoc()) {
     $lastRow = $row;
 }
 $result->close();
+
+// maybe future use?
+//$raw_path = explode("?", $_SERVER["REQUEST_URI"], 2)[0];
 
 $encoded = json_encode($convertedData);
 echo($encoded);

@@ -6,27 +6,21 @@ class APIDatasource extends Datasource {
     private $baseUrl;
     private $table;
     private $rows;
+    private $globalDatasourcePart;
 
-    public function __construct($baseUrl, $table, array $rows) {
+    public function __construct($globalDatasourcePart, $baseUrl, $table, array $rows) {
         $this->baseUrl = $baseUrl;
         $this->table = $table;
         $this->rows = $rows;
+        $this->globalDatasourcePart = $globalDatasourcePart;
     }
 
     public function generate() {
         $rawData = "
 {
-    \"datasource\": {
-        \"type\": \"yesoreyeram-infinity-datasource\",
-        \"uid\": \"\${DS_YESOREYERAM-INFINITY-DATASOURCE}\"
-    },
     \"targets\": [
         {
             \"columns\": [],
-            \"datasource\": {
-                \"type\": \"yesoreyeram-infinity-datasource\",
-                \"uid\": \"\${DS_YESOREYERAM-INFINITY-DATASOURCE}\"
-            },
             \"filters\": [],
             \"format\": \"table\",
             \"global_query_id\": \"\",
@@ -103,6 +97,8 @@ class APIDatasource extends Datasource {
         }
 
         $tmp["transformations"] = array_merge($tmp["transformations"], $this->additionalTransformations);
+        $tmp["datasource"] = $this->globalDatasourcePart;
+        $tmp["targets"][0]["datasource"] = $this->globalDatasourcePart;
         return $tmp;
     }
 }

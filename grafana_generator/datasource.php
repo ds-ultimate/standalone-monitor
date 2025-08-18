@@ -56,4 +56,24 @@ abstract class Datasource {
 
         return $this;
     }
+
+    public function addTransformationSortByName($newOrder) {
+        $indexNameArray = [];
+
+        foreach($newOrder as $idx => $name) {
+            $indexNameArray[$name] = $idx;
+        }
+
+        $this->additionalTransformations[] = [
+            "id" => "organize",
+            "options" => [
+                "excludeByName" => [],
+                "includeByName" => [],
+                "indexByName" => $indexNameArray,
+                "renameByName" => [],
+            ],
+        ];
+
+        return $this;
+    }
 }

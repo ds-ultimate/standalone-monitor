@@ -4,65 +4,33 @@ require_once "layouter.php";
 
 require_once "dashboard.php";
 require_once "row.php";
-require_once "gauge.php";
-require_once "timeseries.php";
+require_once "grafanaInterface.php";
 
-require_once "apiDatasource.php";
-require_once "dashboardDatasource.php";
+require_once "panelParts/loadPanel.php";
+require_once "panelParts/cpuUsagePanel.php";
+require_once "panelParts/memoryUsagePanel.php";
 
-
-$cpuCnt = 12;
 
 $dashboard = new Dashboard();
 
+$globalDatasource = getGlobalDatasource();
+
 $dashboard->addPanel((new Row("Server 1")));
+generateLoadPanel($dashboard, $globalDatasource, $cpuCnt);
+generateCpuUsagePanel($dashboard, $globalDatasource);
+generateMemoryUsagePanel($dashboard, $globalDatasource);
 
-$loadPanel = new Timeseries("Load", new APIDatasource(baseUrl: "series", table: "load", rows: ["one", "five", "fifteen"]));
-$dashboard->addPanel((new LayoutRow())
-    ->addPanel(
-        $loadPanel
-    )
-    ->addPanel(
-        (new Gauge("Load", (new DashboardDatasource($loadPanel))
-                ->addTransformationFilterByName(["t", "one"])))
-            ->setMinMax(0, $cpuCnt)
-    )
-);
-
-$cpuDatasource = (new APIDatasource(baseUrl: "series", table: "cpu",
-        rows: ["all_raw", "user_raw", "user_niced_raw", "kernel_raw", "io_wait_raw", "idle_raw"]))
-    ->addTransformationCalculate("user_raw", "/", "all_raw", "user")
-    ->addTransformationCalculate("user_niced_raw", "/", "all_raw", "user_niced")
-    ->addTransformationCalculate("kernel_raw", "/", "all_raw", "kernel")
-    ->addTransformationCalculate("io_wait_raw", "/", "all_raw", "io_wait")
-    ->addTransformationCalculate("idle_raw", "/", "all_raw", "idle")
-    ->addTransformationFilterByPattern("^(?!.*_raw$).*");
-
-$cpuPanel = new Timeseries("CPU Usage", $cpuDatasource);
-$dashboard->addPanel((new LayoutRow())
-    ->addPanel(
-        $cpuPanel
-    )
-
-    ->addPanel(
-        (new Gauge("CPU Usage", (new DashboardDatasource($cpuPanel))
-                ->addTransformationCalculate("user", "+", "user_niced", "tmp1")
-                ->addTransformationCalculate("tmp1", "+", "kernel", "tmp2")
-                ->addTransformationCalculate("tmp2", "+", "io_wait", "usage")
-                ->addTransformationFilterByName(["t", "usage"])))
-            ->setMinMax(0, 1)
-            ->setUnit("percentunit")
-    )
-);
 /*
-$dashboard->addPanel((new LayoutRow())
-    ->addPanel(
-        (new Timeseries("Memory Usage"))
-    )
-    ->addPanel(
-        (new Gauge("Memory Usage"))
-    )
-);
+    "diskio" => [
+        "type" => "array",
+        "columns" => [
+            ["diskname", "diskname", "s"],
+            ["r_io", "read_io", "id"],
+            ["r_sector", "read_sector", "id"],
+            ["w_io", "write_io", "id"],
+            ["w_sector", "write_sector", "id"],
+        ],
+    ],
 $dashboard->addPanel((new LayoutRow())
     ->addPanel(
         (new Timeseries("Disk IO Usage sectors"))
@@ -73,6 +41,18 @@ $dashboard->addPanel((new LayoutRow())
         ->setSize(12, 8)
     )
 );
+    "diskusage" => [
+        "type" => "array",
+        "columns" => [
+            ["diskname", "diskname", "s"],
+            ["mounted_at", "mounted_at", "s"],
+            ["kb_all", "kbytes_all", "i"],
+            ["kb_used", "kbytes_used", "i"],
+            ["kb_reserved", "kbytes_reserved", "i"],
+            ["in_all", "inodes_all", "i"],
+            ["in_used", "inodes_used", "i"],
+        ],
+    ],
 $dashboard->addPanel((new LayoutRow())
     ->addPanel(
         (new Timeseries("Disk Usage"))
@@ -81,6 +61,16 @@ $dashboard->addPanel((new LayoutRow())
         (new Gauge("Disk Usage"))
     )
 );
+    "network" => [
+        "type" => "array",
+        "columns" => [
+            ["interface", "interface", "s"],
+            ["sent_bytes", "sent_bytes", "id"],
+            ["received_bytes", "received_bytes", "id"],
+            ["sent_packets", "sent_packets", "id"],
+            ["received_packets", "received_packets", "id"],
+        ],
+    ],
 $dashboard->addPanel((new LayoutRow())
     ->addPanel(
         (new Timeseries("Network Usage PPS"))
@@ -91,12 +81,49 @@ $dashboard->addPanel((new LayoutRow())
         ->setSize(12, 8)
     )
 );
+    "ssh" => [
+        "type" => "single",
+        "columns" => [
+            ["sessions", "num_sessions", "i"],
+        ],
+    ],
 $dashboard->addPanel((new LayoutRow())
     ->addPanel(
         (new Timeseries("SSH sessions"))
         ->setSize(12, 8)
     )
 );
+    "sql" => [
+        "type" => "single",
+        "columns" => [
+            ["bytes_received", "bytes_received", "i"],
+            ["bytes_sent", "bytes_sent", "i"],
+            ["handler_commit", "handler_commit", "i"],
+            ["handler_delete", "handler_delete", "i"],
+            ["handler_update", "handler_update", "i"],
+            ["handler_write", "handler_write", "i"],
+            ["innodb_data_read", "innodb_data_read", "i"],
+            ["innodb_data_written", "innodb_data_written", "i"],
+            ["innodb_data_reads", "innodb_data_reads", "i"],
+            ["innodb_data_writes", "innodb_data_writes", "i"],
+            ["queries", "queries", "i"],
+            ["connections", "connections", "i"],
+    
+            ["innodb_buffer_pool_bytes_data", "innodb_buffer_pool_bytes_data", "i"],
+            ["innodb_buffer_pool_pages_data", "innodb_buffer_pool_pages_data", "i"],
+            ["Innodb_buffer_pool_pages_dirty", "Innodb_buffer_pool_pages_dirty", "i"],
+            ["Innodb_buffer_pool_bytes_dirty", "Innodb_buffer_pool_bytes_dirty", "i"],
+            ["innodb_buffer_pool_pages_free", "innodb_buffer_pool_pages_free", "i"],
+            ["innodb_buffer_pool_pages_flushed", "innodb_buffer_pool_pages_flushed", "i"],
+            ["innodb_mem_dictionary", "innodb_mem_dictionary", "i"],
+    
+            ["qcache_free_memory", "qcache_free_memory", "i"],
+            ["qcache_hits", "qcache_hits", "i"],
+            ["qcache_inserts", "qcache_inserts", "i"],
+            ["qcache_not_cached", "qcache_not_cached", "i"],
+            ["qcache_total_blocks", "qcache_total_blocks", "i"],
+        ],
+    ],
 $dashboard->addPanel((new LayoutRow())
     // todo view that stuff and decide how to show
     ->addPanel(
@@ -110,3 +137,5 @@ $dashboard->doLayout();
 $result = $dashboard->generate();
 
 file_put_contents("../panels.json", json_encode($result, JSON_PRETTY_PRINT));
+
+performImport($result);

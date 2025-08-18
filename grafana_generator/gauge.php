@@ -4,16 +4,15 @@ require_once "dashboard.php";
 
 class Gauge extends DashboardPanel {
     private Datasource $datasource;
-    private $minMax;
-    private $unit;
+    private $minMax = null;
+    private $unit = null;
+    private $fields = "";
 
     public function __construct($title, $datasource)
     {
         parent::__construct($title);
 
         $this->datasource = $datasource;
-        $this->minMax = null;
-        $this->unit = null;
         $this->setSize(6, 8);
     }
 
@@ -24,6 +23,11 @@ class Gauge extends DashboardPanel {
 
     public function setUnit($newUnit) {
         $this->unit = $newUnit;
+        return $this;
+    }
+
+    public function setFields($newFields) {
+        $this->fields = $newFields;
         return $this;
     }
 
@@ -63,7 +67,7 @@ class Gauge extends DashboardPanel {
                 \"calcs\": [
                     \"lastNotNull\"
                 ],
-                \"fields\": \"\",
+                \"fields\": \"{$this->fields}\",
                 \"values\": false
             },
             \"showThresholdLabels\": false,
