@@ -30,7 +30,7 @@ function get_diskusage_data()
 
         $exp = explode(" ", $line);
 
-        if(startsWith($exp[0], "/dev/")) {
+        if(startsWith($exp[0], "/dev/") && ! startsWith($exp[0], "/dev/loop")) {
             $fsStats = explode(" ", exec('stat --file-system -c "%S %b %f %a %c %d" \''.$exp[1].'\''));
             $block = floatval($fsStats[0]) / 1024;
 
