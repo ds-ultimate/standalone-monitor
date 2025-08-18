@@ -30,22 +30,22 @@ $COLLECTOR_CONFIG = [
         "columns" => [
             // request_name, sql_name, type
             ["name", "name", "s"],
-            ["all", "all", "i"],
-            ["user", "user", "i"],
-            ["user_niced", "user_niced", "i"],
-            ["kernel", "kernel", "i"],
-            ["io_wait", "io_wait", "i"],
-            ["idle", "idle", "i"],
+            ["all_raw", "all", "id"],
+            ["user_raw", "user", "id"],
+            ["user_niced_raw", "user_niced", "id"],
+            ["kernel_raw", "kernel", "id"],
+            ["io_wait_raw", "io_wait", "id"],
+            ["idle_raw", "idle", "id"],
         ],
     ],
     "diskio" => [
         "type" => "array",
         "columns" => [
             ["diskname", "diskname", "s"],
-            ["r_io", "read_io", "i"],
-            ["r_sector", "read_sector", "i"],
-            ["w_io", "write_io", "i"],
-            ["w_sector", "write_sector", "i"],
+            ["r_io", "read_io", "id"],
+            ["r_sector", "read_sector", "id"],
+            ["w_io", "write_io", "id"],
+            ["w_sector", "write_sector", "id"],
         ],
     ],
     "diskusage" => [
@@ -83,10 +83,10 @@ $COLLECTOR_CONFIG = [
         "type" => "array",
         "columns" => [
             ["interface", "interface", "s"],
-            ["sent_bytes", "sent_bytes", "i"],
-            ["received_bytes", "received_bytes", "i"],
-            ["sent_packets", "sent_packets", "i"],
-            ["received_packets", "received_packets", "i"],
+            ["sent_bytes", "sent_bytes", "id"],
+            ["received_bytes", "received_bytes", "id"],
+            ["sent_packets", "sent_packets", "id"],
+            ["received_packets", "received_packets", "id"],
         ],
     ],
     "sql" => [

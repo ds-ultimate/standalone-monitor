@@ -1,58 +1,128 @@
 <?php
+require_once "../shared/helper_functions.php";
+require_once "../shared/collector_config.php";
 
 if(! isset($_SERVER["REQUEST_METHOD"]) || $_SERVER["REQUEST_METHOD"] !== "GET") {
     http_response_code(404);
     die();
 }
 
-include_once "../config.php";
+require_once "../config.php";
 
 # access control
 if(! isset($_SERVER["HTTP_API_KEY"]) || $_SERVER["HTTP_API_KEY"] !== $GRAFANA_API_KEY) {
-    http_response_code(401);
-    die();
+   http_response_code(401);
+   die();
 }
 
+
 # validations
-$valid_date_from = filter_input(INPUT_GET, "date_from", FILTER_VALIDATE_INT);
-$valid_date_to = filter_input(INPUT_GET, "date_to", FILTER_VALIDATE_INT);
+$valid_date_from = (int) (filter_input(INPUT_GET, "date_from", FILTER_VALIDATE_INT) / 1000);
+$valid_date_to = (int) (filter_input(INPUT_GET, "date_to", FILTER_VALIDATE_INT) / 1000);
+if($valid_date_to <= $valid_date_from) {
+    http_response_code(422);
+    die("To must be bigger than from");
+}
 
 $raw_path = explode("?", $_SERVER["REQUEST_URI"], 2)[0];
 
-$data = [
-    "PATH" => $raw_path,
-    "date_from" => $valid_date_from,
-    "date_to" => $valid_date_to,
-];
 
-
-# fake data for now
-$result = [];
-$last = 50;
-$last2 = 50;
-for($i = $valid_date_from; $i < $valid_date_to; $i+=1000) {
-    $last = max(min($last + random_int(-2, 2), 100), 0);
-    $last2 = max(min($last2 + random_int(-2, 2), 100), 0);
-    $result[] = [
-        "t" => $i,
-        "a" => $last,
-        "b" => $last2,
-    ];
+if(! isset($_GET["table"]) || ! isset($_GET["row"])) {
+    http_response_code(404);
+    die();
 }
 
-$encoded = json_encode($result);
-echo($encoded);
-die();
+$tables = array_keys($COLLECTOR_CONFIG);
+$table_idx = array_search($_GET["table"], $tables);
+if($table_idx === false) {
+    http_response_code(404);
+    die();
+}
+$valid_table = $tables[$table_idx];
 
-//query form sql
 
-//send queried data back
+$valid_rows = [];
+foreach($COLLECTOR_CONFIG[$valid_table]["columns"] as $colArr) {
+    if(in_array($colArr[0], $_GET["row"])) {
+        $valid_rows[] = $colArr;
+    }
+}
 
-$data = [
-    "PATH" => $raw_path,
-    "date_from" => $valid_date_from,
-    "date_to" => $valid_date_to,
-];
+if(count($valid_rows) < 1) {
+    http_response_code(404);
+    die();
+}
 
-$encoded = json_encode($data);
+
+require_once "../shared/mysql_interface.php";
+
+$database = new MysqlInterface($MYSQL_DB_NAME);
+
+$query_rows = "`time`*1000 as `t`";
+foreach($valid_rows as $row) {
+    $query_rows.= ",`{$row[1]}`as`{$row[0]}`";
+}
+
+$zoomlevelPart = "";
+$sorted_zoom = array_keys($ZOOM_CONFIG);
+rsort($sorted_zoom);
+$curLevel = $sorted_zoom[0];
+
+if($valid_date_to - $valid_date_from > $MAX_POINTS) {
+    //virtual zoom "out" needed to reduce amount of points
+    $rawRangeSeconds = $valid_date_to - $valid_date_from;
+
+    $curLevelId = 0;
+    while($curLevelId < count($sorted_zoom)) {
+        $curLevel = $sorted_zoom[$curLevelId];
+        if($rawRangeSeconds / $ZOOM_CONFIG[$curLevel] < $MAX_POINTS) {
+            break;
+        }
+        $curLevelId++;
+    }
+
+    $zoomlevelPart = " AND `zoombase` <= $curLevel";
+}
+
+//reduce $valid_date_from by one step or at least 10s
+$valid_date_from -= max($ZOOM_CONFIG[$curLevel], 10);
+
+
+$query = "SELECT $query_rows FROM `$valid_table` WHERE $valid_date_from < `time` AND `time` < $valid_date_to$zoomlevelPart";
+
+$result = $database->query($query);
+
+$convertedData = [];
+$lastRow = null;
+while ($row = $result->fetch_assoc()) {
+    if($lastRow == null) {
+        $lastRow = $row;
+        continue;
+    }
+
+    $tmp = [
+        "t" => (int) $row["t"],
+    ];
+
+    foreach($valid_rows as $valRow) {
+        if($valRow[2] == "i") {
+            $tmp[$valRow[0]] = intval($row[$valRow[0]]);
+        } else if($valRow[2] == "f") {
+            $tmp[$valRow[0]] = floatval($row[$valRow[0]]);
+        } else if($valRow[2] == "id") {
+            $timeDiff = intval($row["t"]) - intval($lastRow["t"]);
+            $tmp[$valRow[0]] = (intval($row[$valRow[0]]) - intval($lastRow[$valRow[0]])) / $timeDiff;
+        } else if($valRow[2] == "fd") {
+            $timeDiff = intval($row["t"]) - intval($lastRow["t"]);
+            $tmp[$valRow[0]] = (floatval($row[$valRow[0]]) - floatval($lastRow[$valRow[0]])) / $timeDiff;
+        } else {
+            $tmp[$valRow[0]] = $row[$valRow[0]];
+        }
+    }
+    $convertedData[] = $tmp;
+    $lastRow = $row;
+}
+$result->close();
+
+$encoded = json_encode($convertedData);
 echo($encoded);

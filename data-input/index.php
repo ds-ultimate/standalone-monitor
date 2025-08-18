@@ -1,11 +1,11 @@
 <?php
 
-include_once "helper_functions.php";
+require_once "../shared/helper_functions.php";
 
 if(! isset($_SERVER["REQUEST_METHOD"])) exit_with_code(404);
 if($_SERVER["REQUEST_METHOD"] !== "POST") exit_with_code(404);
 
-include_once "../config.php";
+require_once "../config.php";
 
 $server_id = filter_input(INPUT_GET, "server_id", FILTER_VALIDATE_INT);
 
@@ -18,8 +18,8 @@ if(! isset($_SERVER["HTTP_API_KEY"])) exit_with_code(401);
 if($_SERVER["HTTP_API_KEY"] !== $server_settings["key"]) exit_with_code(401);
 
 
-include_once "../shared/collector_config.php";
-include_once "../shared/mysql_interface.php";
+require_once "../shared/collector_config.php";
+require_once "../shared/mysql_interface.php";
 
 $database = new MysqlInterface($MYSQL_DB_NAME);
 
@@ -89,6 +89,11 @@ function generic_import_data($typeName, $globalPart) {
                 return;
             }
             $first = false;
+        }
+
+        if($first) {
+            // no entries
+            return;
         }
     }
 

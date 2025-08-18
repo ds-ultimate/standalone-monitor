@@ -41,12 +41,12 @@ function get_cpu_data()
 
             $result_data[] = [
                 "name" => $exp[0],
-                "all" => $all,
-                "user" => $exp[1],
-                "user_niced" => $exp[2],
-                "kernel" => $exp[3],
-                "io_wait" => $exp[5],
-                "idle" => $exp[4],
+                "all_raw" => $all,
+                "user_raw" => $exp[1],
+                "user_niced_raw" => $exp[2],
+                "kernel_raw" => $exp[3],
+                "io_wait_raw" => $exp[5],
+                "idle_raw" => $exp[4],
             ];
         }
     }
