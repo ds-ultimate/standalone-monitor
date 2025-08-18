@@ -6,53 +6,11 @@ class APIDatasource extends Datasource {
     private $baseUrl;
     private $table;
     private $rows;
-    private $additionalTransformations;
 
     public function __construct($baseUrl, $table, array $rows) {
         $this->baseUrl = $baseUrl;
         $this->table = $table;
         $this->rows = $rows;
-        $this->additionalTransformations = [];
-    }
-
-    public function addTransformationCalculate($field1, $operator, $field2, $newName) {
-        $this->additionalTransformations[] = [
-            "id" => "calculateField",
-            "options" => [
-                "alias" => $newName,
-                "binary" => [
-                    "left" => [
-                        "matcher" => [
-                            "id" => "byName",
-                            "options" => $field1,
-                        ],
-                    ],
-                    "operator" => $operator,
-                    "right" => [
-                        "matcher" => [
-                            "id" => "byName",
-                            "options" => $field2,
-                        ],
-                    ],
-                ],
-                "mode" => "binary",
-            ],
-        ];
-
-        return $this;
-    }
-
-    public function addTransformationFilterByName($pattern) {
-        $this->additionalTransformations[] = [
-            "id" => "filterFieldsByName",
-            "options" => [
-                "include" => [
-                    "pattern" => $pattern,
-                ],
-            ],
-        ];
-
-        return $this;
     }
 
     public function generate() {

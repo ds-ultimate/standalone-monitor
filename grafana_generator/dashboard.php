@@ -22,6 +22,10 @@ abstract class DashboardPanel extends LayoutElement {
         $this->panelId = (int) $panelId;
     }
 
+    function getPanelId() {
+        return $this->panelId;
+    }
+
     public abstract function generate();
 }
 
@@ -112,7 +116,7 @@ class Dashboard extends LayoutManager {
         }
 
         $genPanels = [];
-        $panelId = 0;
+        $panelId = 1;
         foreach($this->getAllLayoutSubelements() as $p) {
             $p->setPanelId($panelId++);
             $genPanels[] = $p->generate();

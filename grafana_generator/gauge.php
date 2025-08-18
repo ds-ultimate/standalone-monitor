@@ -3,20 +3,33 @@
 require_once "dashboard.php";
 
 class Gauge extends DashboardPanel {
-    public function __construct($title)
+    private Datasource $datasource;
+    private $minMax;
+    private $unit;
+
+    public function __construct($title, $datasource)
     {
         parent::__construct($title);
 
+        $this->datasource = $datasource;
+        $this->minMax = null;
+        $this->unit = null;
         $this->setSize(6, 8);
+    }
+
+    public function setMinMax($min, $max) {
+        $this->minMax = [(int) $min, (int) $max];
+        return $this;
+    }
+
+    public function setUnit($newUnit) {
+        $this->unit = $newUnit;
+        return $this;
     }
 
     public function generate() {
         $rawData = "
     {
-        \"datasource\": {
-            \"type\": \"yesoreyeram-infinity-datasource\",
-            \"uid\": \"\${DS_YESOREYERAM-INFINITY-DATASOURCE}\"
-        },
         \"fieldConfig\": {
             \"defaults\": {
                 \"color\": {
@@ -24,10 +37,14 @@ class Gauge extends DashboardPanel {
                 },
                 \"mappings\": [],
                 \"thresholds\": {
-                    \"mode\": \"absolute\",
+                    \"mode\": \"percentage\",
                     \"steps\": [
                         {
                             \"color\": \"green\"
+                        },
+                        {
+                            \"color\": \"yellow\",
+                            \"value\": 50
                         },
                         {
                             \"color\": \"red\",
@@ -54,27 +71,6 @@ class Gauge extends DashboardPanel {
             \"sizing\": \"auto\"
         },
         \"pluginVersion\": \"11.6.0\",
-        \"targets\": [
-            {
-                \"columns\": [],
-                \"filters\": [],
-                \"format\": \"table\",
-                \"global_query_id\": \"\",
-                \"refId\": \"A\",
-                \"root_selector\": \"\",
-                \"source\": \"url\",
-                \"type\": \"json\",
-                \"url\": \"\",
-                \"url_options\": {
-                    \"data\": \"\",
-                    \"method\": \"GET\"
-                },
-                \"datasource\": {
-                    \"type\": \"yesoreyeram-infinity-datasource\",
-                    \"uid\": \"\${DS_YESOREYERAM-INFINITY-DATASOURCE}\"
-                }
-            }
-        ],
         \"type\": \"gauge\"
     }
     ";
@@ -82,6 +78,16 @@ class Gauge extends DashboardPanel {
         if($tmp == NULL) {
             die("internal error gauge\n");
         }
+
+        $tmp = array_merge($tmp, $this->datasource->generate());
+        if($this->minMax !== null) {
+            $tmp["fieldConfig"]["defaults"]["min"] = $this->minMax[0];
+            $tmp["fieldConfig"]["defaults"]["max"] = $this->minMax[1];
+        }
+        if($this->unit !== null) {
+            $tmp["fieldConfig"]["defaults"]["unit"] = $this->unit;
+        }
+
         return $this->addIdTitlePos($tmp);
     }
 }
