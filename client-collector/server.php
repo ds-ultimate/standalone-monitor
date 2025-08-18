@@ -1,16 +1,16 @@
 <?php
 
-include_once "config.php";
-include_once "shared/helper_functions.php";
-include_once "shared/mysql_interface.php";
-include_once "getCpu.php";
-include_once "getDiskIo.php";
-include_once "getDiskUsage.php";
-include_once "getLoad.php";
-include_once "getMemory.php";
-include_once "getNetwork.php";
-include_once "getSql.php";
-include_once "getSsh.php";
+require_once "config.php";
+require_once "shared/helper_functions.php";
+require_once "shared/mysql_interface.php";
+require_once "getCpu.php";
+require_once "getDiskIo.php";
+require_once "getDiskUsage.php";
+require_once "getLoad.php";
+require_once "getMemory.php";
+require_once "getNetwork.php";
+require_once "getSql.php";
+require_once "getSsh.php";
 
 
 $url = "$BASE_URL/?server_id=$SERVER_ID";
@@ -48,7 +48,7 @@ while($diff < $CRON_INTERVAL) {
     if($AUTH_HEADER !== null) {
         $authPart = "Authorization: $AUTH_HEADER\r\n";
     }
-    
+
     $options = [
         'http' => [
             'header' => "Content-type: application/json\r\nAPI-KEY: $API_KEY\r\n$authPart",

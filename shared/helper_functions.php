@@ -6,7 +6,13 @@ function exit_with_code($code) {
 }
 
 function myErrorHandler($errno, $errstr, $errfile, $errline) {
-    exit_with_code(500);
+    if (PHP_SAPI === 'cli') {
+        //Write debug error
+        fwrite(STDERR, "[ERROR] [$errno] $errstr in $errfile on line $errline\n");
+    }
+    else {
+        exit_with_code(500);
+    }
 }
 
 set_error_handler("myErrorHandler");

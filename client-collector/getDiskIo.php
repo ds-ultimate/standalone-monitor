@@ -31,8 +31,8 @@ function get_diskio_data()
             $line = str_replace("  ", " ", $line);
         
         $exp = explode(" ", $line);
-        
-        if(startsWith($exp[2], "sd")) {
+
+        if(startsWith($exp[2], "sd") || startsWith($exp[2], "vd")) {
             $result_data[] = [
                 "diskname" => $exp[2],
                 "r_io" => intval($exp[3]),
