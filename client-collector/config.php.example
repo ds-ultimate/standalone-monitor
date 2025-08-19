@@ -15,8 +15,12 @@ $SERVER_CAPABILITIES = [
     "cpu", "diskio", "diskusage", "load", "memory", "network", "sql", "ssh"
 ];
 
-$AVAILABLE_DISKS = [
+$AVAILABLE_DISKS_IO = [
     "sda", "vda", "nvmen0"
+];
+
+$AVAILABLE_DISKS_USAGE = [
+    "/dev/sda1", "/dev/vda1", "/dev/nvmen0p1"
 ];
 
 $CRON_INTERVAL = 60;
