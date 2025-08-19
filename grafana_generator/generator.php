@@ -10,6 +10,7 @@ require_once "grafanaInterface.php";
 require_once "panelParts/loadPanel.php";
 require_once "panelParts/cpuUsagePanel.php";
 require_once "panelParts/memoryUsagePanel.php";
+require_once "panelParts/diskioPanel.php";
 
 
 $severToGenerate = $SERVER_CONFIGURATION[0];
@@ -30,27 +31,11 @@ if(in_array("memory", $availablePanels)) {
     generateMemoryUsagePanel($dashboard, $globalDatasource);
 }
 
+if(in_array("diskio", $availablePanels)) {
+    generateDiskioPanel($dashboard, $globalDatasource);
+}
+
 /*
-    "diskio" => [
-        "type" => "array",
-        "columns" => [
-            ["diskname", "diskname", "s"],
-            ["r_io", "read_io", "id"],
-            ["r_sector", "read_sector", "id"],
-            ["w_io", "write_io", "id"],
-            ["w_sector", "write_sector", "id"],
-        ],
-    ],
-$dashboard->addPanel((new LayoutRow())
-    ->addPanel(
-        (new Timeseries("Disk IO Usage sectors"))
-        ->setSize(12, 8)
-    )
-    ->addPanel(
-        (new Timeseries("Disk IO Usage bytes"))
-        ->setSize(12, 8)
-    )
-);
     "diskusage" => [
         "type" => "array",
         "columns" => [

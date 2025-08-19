@@ -52,7 +52,6 @@ if(count($valid_rows) < 1) {
 
 
 require_once "../shared/mysql_interface.php";
-
 $database = new MysqlInterface($MYSQL_DB_NAME);
 
 $query_rows = "`time`*1000 as `t`";
@@ -87,42 +86,17 @@ $valid_date_from -= max($ZOOM_CONFIG[$curLevel], 10);
 
 $query = "SELECT $query_rows FROM `$valid_table` WHERE $valid_date_from < `time` AND `time` < $valid_date_to$zoomlevelPart";
 
-$result = $database->query($query);
 
-$convertedData = [];
-$lastRow = null;
-while ($row = $result->fetch_assoc()) {
-    if($lastRow == null) {
-        $lastRow = $row;
-        continue;
-    }
-
-    $tmp = [
-        "t" => (int) $row["t"],
-    ];
-
-    foreach($valid_rows as $valRow) {
-        if($valRow[2] == "i") {
-            $tmp[$valRow[0]] = intval($row[$valRow[0]]);
-        } else if($valRow[2] == "f") {
-            $tmp[$valRow[0]] = floatval($row[$valRow[0]]);
-        } else if($valRow[2] == "id") {
-            $timeDiff = intval($row["t"]) - intval($lastRow["t"]);
-            $tmp[$valRow[0]] = (intval($row[$valRow[0]]) - intval($lastRow[$valRow[0]])) / $timeDiff;
-        } else if($valRow[2] == "fd") {
-            $timeDiff = intval($row["t"]) - intval($lastRow["t"]);
-            $tmp[$valRow[0]] = (floatval($row[$valRow[0]]) - floatval($lastRow[$valRow[0]])) / $timeDiff;
-        } else {
-            $tmp[$valRow[0]] = $row[$valRow[0]];
-        }
-    }
-    $convertedData[] = $tmp;
-    $lastRow = $row;
+$raw_path = explode("?", $_SERVER["REQUEST_URI"], 2)[0];
+if($raw_path == "/series") {
+    require_once "seriesResult.php";
+    $convertedData = getSeriesResult($query, $valid_rows);
+} else if($raw_path == "/namedSeries") {
+    require_once "namedSeriesResult.php";
+    $convertedData = getNamedSeriesResult($query, $valid_rows);
+} else {
+    $convertedData = [];
 }
-$result->close();
-
-// maybe future use?
-//$raw_path = explode("?", $_SERVER["REQUEST_URI"], 2)[0];
 
 $encoded = json_encode($convertedData);
 echo($encoded);

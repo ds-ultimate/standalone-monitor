@@ -11,6 +11,14 @@ function myErrorHandler($errno, $errstr, $errfile, $errline) {
         fwrite(STDERR, "[ERROR] [$errno] $errstr in $errfile on line $errline\n");
     }
     else {
+        $message = sprintf(
+            "PHP %s: %s in %s on line %d",
+            $errno,
+            $errstr,
+            $errfile,
+            $errline
+        );
+        error_log($message);
         exit_with_code(500);
     }
 }

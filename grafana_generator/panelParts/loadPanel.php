@@ -8,7 +8,7 @@ require_once "dashboardDatasource.php";
 
 
 function generateLoadPanel($dashboard, $baseData, $cpuCnt) {
-    $loadPanel = new Timeseries("Load", new APIDatasource(globalDatasourcePart: $baseData, baseUrl: "series", table: "load", rows: ["one", "five", "fifteen"]));
+    $loadPanel = new Timeseries("Load", new APIDatasource(globalDatasourcePart: $baseData, table: "load", rows: ["one", "five", "fifteen"]));
     $dashboard->addPanel((new LayoutRow())
         ->addPanel(
             $loadPanel->setTooltipMode("multi")

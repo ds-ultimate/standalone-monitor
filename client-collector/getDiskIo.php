@@ -37,9 +37,9 @@ function get_diskio_data()
             $result_data[] = [
                 "diskname" => $exp[2],
                 "r_io" => intval($exp[3]),
-                "r_sector" => intval($exp[5]),
+                "r_sector" => intval($exp[5]) / 2,
                 "w_io" => intval($exp[7]),
-                "w_sector" => intval($exp[9]),
+                "w_sector" => intval($exp[9]) / 2,
             ];
         }
     }

@@ -2,15 +2,17 @@
 
 require_once "datasource.php";
 
-class APIDatasource extends Datasource {
+class APINamedDatasource extends Datasource {
     private $table;
     private $rows;
     private $globalDatasourcePart;
+    private $nameRow;
 
-    public function __construct($globalDatasourcePart, $table, array $rows) {
+    public function __construct($globalDatasourcePart, $table, $nameRow, array $rows) {
         $this->table = $table;
         $this->rows = $rows;
         $this->globalDatasourcePart = $globalDatasourcePart;
+        $this->nameRow = $nameRow;
     }
 
     public function generate() {
@@ -76,10 +78,15 @@ class APIDatasource extends Datasource {
             die("internal error apiDatasource\n");
         }
 
-        $tmp["targets"][0]["url"] = "series";
+        $tmp["targets"][0]["url"] = "namedSeries";
         $tmp["targets"][0]["url_options"]["params"][] = [
             "key" => "table",
             "value" => $this->table,
+        ];
+
+        $tmp["targets"][0]["url_options"]["params"][] = [
+            "key" => "nameCol",
+            "value" => $this->nameRow,
         ];
 
         for($i = 0; $i < count($this->rows); $i++) {

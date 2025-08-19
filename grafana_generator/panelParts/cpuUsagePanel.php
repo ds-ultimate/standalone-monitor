@@ -8,7 +8,7 @@ require_once "dashboardDatasource.php";
 
 
 function generateCpuUsagePanel($dashboard, $baseData) {
-    $cpuDatasource = (new APIDatasource(globalDatasourcePart: $baseData, baseUrl: "series", table: "cpu",
+    $cpuDatasource = (new APIDatasource(globalDatasourcePart: $baseData, table: "cpu",
             rows: ["all_raw", "user_raw", "user_niced_raw", "kernel_raw", "io_wait_raw", "idle_raw"]))
         ->addTransformationCalculate("user_raw", "/", "all_raw", "user")
         ->addTransformationCalculate("user_niced_raw", "/", "all_raw", "user_niced")
@@ -20,7 +20,7 @@ function generateCpuUsagePanel($dashboard, $baseData) {
     $cpuPanel = new Timeseries("CPU Usage", $cpuDatasource);
     $dashboard->addPanel((new LayoutRow())
         ->addPanel(
-            $cpuPanel->setTooltipMode("multi")
+            $cpuPanel->setTooltipMode("multi")->setUnit("percentunit")
         )
 
         ->addPanel(

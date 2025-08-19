@@ -8,7 +8,7 @@ require_once "dashboardDatasource.php";
 
 
 function generateMemoryUsagePanel($dashboard, $baseData) {
-    $datasource = (new APIDatasource(globalDatasourcePart: $baseData, baseUrl: "memorySeries", table: "memory",
+    $datasource = (new APIDatasource(globalDatasourcePart: $baseData, table: "memory",
             rows: ["used_programs", "used_buffers", "used_cache", "free"]))
         ->addTransformationSortByName(["used_programs", "used_cache", "used_buffers", "free", "t"]);
 
@@ -19,7 +19,7 @@ function generateMemoryUsagePanel($dashboard, $baseData) {
                 ->setStackingMode("normal")->setTooltipMode("multi")
         )
         ->addPanel(
-            (new Gauge("Memory Usage", new APIDatasource(globalDatasourcePart: $baseData, baseUrl: "series", table: "memory",
+            (new Gauge("Memory Usage", new APIDatasource(globalDatasourcePart: $baseData, table: "memory",
                     rows: ["used_programs", "mem_total"])))
                 ->setUnit("kbytes")->setFields("used_programs")->setMinMax(0, null)
         )

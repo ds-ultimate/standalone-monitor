@@ -76,4 +76,16 @@ abstract class Datasource {
 
         return $this;
     }
+
+    public function addTransformationRenameRegex($search, $replacement) {
+        $this->additionalTransformations[] = [
+            "id" => "renameByRegex",
+            "options" => [
+                "regex" => $search,
+                "renamePattern" => $replacement,
+            ],
+        ];
+
+        return $this;
+    }
 }
