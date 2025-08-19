@@ -4,6 +4,7 @@
 
 function get_diskio_data()
 {
+    global $AVAILABLE_DISKS;
     /*
      * File /proc/diskstats
      * Column 0: device id
@@ -32,7 +33,7 @@ function get_diskio_data()
         
         $exp = explode(" ", $line);
 
-        if(startsWith($exp[2], "sd") || startsWith($exp[2], "vd")) {
+        if(in_array($exp[2], $AVAILABLE_DISKS)) {
             $result_data[] = [
                 "diskname" => $exp[2],
                 "r_io" => intval($exp[3]),
