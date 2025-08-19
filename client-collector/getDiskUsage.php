@@ -31,7 +31,7 @@ function get_diskusage_data()
 
         $exp = explode(" ", $line);
 
-        if(in_array($exp[0], $AVAILABLE_DISKS_USAGE)) {
+        if(in_array($exp[1], $AVAILABLE_DISKS_USAGE)) {
             $fsStats = explode(" ", exec('stat --file-system -c "%S %b %f %a %c %d" \''.$exp[1].'\''));
             $block = floatval($fsStats[0]) / 1024;
 

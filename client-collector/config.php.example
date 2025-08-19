@@ -20,7 +20,7 @@ $AVAILABLE_DISKS_IO = [
 ];
 
 $AVAILABLE_DISKS_USAGE = [
-    "/dev/sda1", "/dev/vda1", "/dev/nvmen0p1"
+    "/", "/boot", "/boot/efi"
 ];
 
 $CRON_INTERVAL = 60;
