@@ -1,7 +1,6 @@
 <?php
 
 require_once "timeseries.php";
-
 require_once "apiNamedDatasource.php";
 
 
@@ -21,10 +20,12 @@ function generateDiskioPanel($dashboard, $baseData) {
             (new Timeseries("Disk data/s", $dataSrcSector))
             ->setSize(12, 8)
             ->setUnit("kbytes")
+            ->setTooltipMode("multi")
         )
         ->addPanel(
             (new Timeseries("Disk iops", $dataSrcBytes))
             ->setSize(12, 8)
+            ->setTooltipMode("multi")
         )
     );
 }

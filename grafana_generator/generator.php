@@ -13,6 +13,8 @@ require_once "panelParts/memoryUsagePanel.php";
 require_once "panelParts/diskioPanel.php";
 require_once "panelParts/diskusagePanel.php";
 require_once "panelParts/networkPanel.php";
+require_once "panelParts/sshPanel.php";
+
 
 $severToGenerate = $SERVER_CONFIGURATION[0];
 $dashboard = new Dashboard();
@@ -44,19 +46,11 @@ if(in_array("network", $availablePanels)) {
     generatenetworkPanel($dashboard, $globalDatasource);
 }
 
+if(in_array("ssh", $availablePanels)) {
+    generateSSHPanel($dashboard, $globalDatasource);
+}
+
 /*
-    "ssh" => [
-        "type" => "single",
-        "columns" => [
-            ["sessions", "num_sessions", "i"],
-        ],
-    ],
-$dashboard->addPanel((new LayoutRow())
-    ->addPanel(
-        (new Timeseries("SSH sessions"))
-        ->setSize(12, 8)
-    )
-);
     "sql" => [
         "type" => "single",
         "columns" => [

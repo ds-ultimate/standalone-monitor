@@ -1,10 +1,7 @@
 <?php
 
-require_once "gauge.php";
 require_once "timeseries.php";
-
 require_once "apiNamedDatasource.php";
-require_once "dashboardDatasource.php";
 
 
 function generatenetworkPanel($dashboard, $baseData) {
@@ -22,10 +19,12 @@ function generatenetworkPanel($dashboard, $baseData) {
         ->addPanel(
             (new Timeseries("Network Usage PPS", $dataSrcPPS))
             ->setSize(12, 8)
+            ->setTooltipMode("multi")
         )
         ->addPanel(
             (new Timeseries("Network Usage bytes", $dataSrcBytes))
             ->setSize(12, 8)
+            ->setTooltipMode("multi")
         )
     );
 }

@@ -18,6 +18,7 @@ function generateDiskusagePanel($dashboard, $baseData) {
             $panelTimeseries
             ->setSize(12, 8)
             ->setUnit("percentunit")
+            ->setTooltipMode("multi")
         )
         ->addPanel(
             (new Gauge("Disk usage", (new DashboardDatasource($panelTimeseries))))
