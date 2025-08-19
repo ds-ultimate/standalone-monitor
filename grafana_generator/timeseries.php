@@ -10,6 +10,8 @@ class Timeseries extends DashboardPanel {
     private $showPoints = "auto";
     private $stackingMode = "none";
     private $tooltipMode = "single";
+    private $lineWidth = 1;
+    private $fillOpacity = 0;
 
     public function __construct($title, Datasource $datasource)
     {
@@ -27,6 +29,16 @@ class Timeseries extends DashboardPanel {
 
     public function setGraphType($newGraphType) {
         $this->graphType = $newGraphType;
+        return $this;
+    }
+
+    public function setLineWidth($lineWidth) {
+        $this->lineWidth = $lineWidth;
+        return $this;
+    }
+
+    public function setFillOpacity($fillOpacity) {
+        $this->fillOpacity = $fillOpacity;
         return $this;
     }
 
@@ -60,9 +72,9 @@ class Timeseries extends DashboardPanel {
                 \"axisLabel\": \"\",
                 \"axisPlacement\": \"auto\",
                 \"barAlignment\": 0,
-                \"barWidthFactor\": 0.6,
+                \"barWidthFactor\": 1,
                 \"drawStyle\": \"{$this->graphType}\",
-                \"fillOpacity\": 0,
+                \"fillOpacity\": {$this->fillOpacity},
                 \"gradientMode\": \"none\",
                 \"hideFrom\": {
                     \"legend\": false,
@@ -71,7 +83,7 @@ class Timeseries extends DashboardPanel {
                 },
                 \"insertNulls\": false,
                 \"lineInterpolation\": \"linear\",
-                \"lineWidth\": 1,
+                \"lineWidth\": {$this->lineWidth},
                 \"pointSize\": 5,
                 \"scaleDistribution\": {
                     \"type\": \"linear\"

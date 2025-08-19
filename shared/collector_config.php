@@ -72,7 +72,6 @@ $COLLECTOR_CONFIG = [
         "type" => "single",
         "columns" => [
             ["mem_total", "mem_total", "i"],
-            ["file_cache_size", "file_cache_size", "i"],
             ["used_programs", "used_programs", "i"],
             ["used_buffers", "used_buffers", "i"],
             ["used_cache", "used_cache", "i"],

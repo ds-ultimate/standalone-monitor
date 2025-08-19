@@ -3,76 +3,52 @@
 // collects the current memory usage
 
 
-function get_memory_data_inKB($val, $strExp) {
-    switch($strExp) {
+function get_memory_data_inKB($rawData) {
+    $parts = explode(" ", trim($rawData));
+    $sizeDelimiter = "";
+    if(count($parts) > 1) {
+        $sizeDelimiter = $parts[1];
+    }
+
+    switch($sizeDelimiter) {
         case "MB":
-            return intval(1000 * floatval($val));
+            return intval(1000 * floatval($parts[0]));
         case "GB":
-            return intval(1000 * 1000 * floatval($val));
+            return intval(1000 * 1000 * floatval($parts[0]));
         case "kB":
         default:
-            return intval($val);
+            return intval($parts[0]);
     }
+}
+
+function parseMeminfo() {
+    $meminfo = [];
+    foreach (file('/proc/meminfo') as $line) {
+        $parts = explode(':', $line);
+        $meminfo[$parts[0]] = get_memory_data_inKB($parts[1]);
+    }
+    return $meminfo;
 }
 
 function get_memory_data()
 {
-
     /*
      * Memory /proc/meminfo
      * total memory -> MemTotal
-     * fileCacheSize -> Active(file)+Inactive(file)
      * used (programms) -> MemTotal - MemFree - Buffers - Cached
      * used (buffers) -> Buffers
      * used (cache) -> Cached
      * free -> MemFree
      * claimable (not save) -> used (buffers) + used (cache) + free
      */
-    
-    $statsFile = fopen("/proc/meminfo", "r");
-    
-    $mapping = [
-        "MemTotal:" => "mem_total",
-        "MemFree:" => "free",
-        "Buffers:" => "used_buffers",
-        "Cached:" => "used_cache",
-    ];
-    
-    $prog = 0;
-    $fileCache = 0;
 
+    $meminfo = parseMeminfo();
     $result_data = [];
-
-    while(($line=fgets($statsFile))!==false) {
-        $line = trim(str_replace("\n", "", $line));
-        while(str_contains($line, "  "))
-            $line = str_replace("  ", " ", $line);
-        
-        $exp = explode(" ", $line);
-        
-        if(array_key_exists($exp[0], $mapping)) {
-            //will be written directly to Database
-            $result_data[$mapping[$exp[0]]] = get_memory_data_inKB($exp[1], $exp[2]);
-        }
-        switch($exp[0]) {
-            case "Active(file):":
-            case "Inactive(file):":
-                $fileCache += get_memory_data_inKB($exp[1], $exp[2]);
-                break;
-            case "MemTotal:":
-                $prog += get_memory_data_inKB($exp[1], $exp[2]);
-                break;
-            case "MemFree:":
-            case "Buffers:":
-            case "Cached:":
-                $prog -= get_memory_data_inKB($exp[1], $exp[2]);
-                break;
-        }
-    }
-    $result_data["file_cache_size"] = $fileCache;
-    $result_data["used_programs"] = $prog;
-    
-    fclose($statsFile);
-
+    $result_data["mem_total"] = $meminfo['MemTotal'];
+    $result_data["free"] = $meminfo['MemFree'];
+    $result_data["used_buffers"] = $meminfo['Buffers'];
+    $result_data["used_cache"] = $meminfo['Cached'] + $meminfo['SReclaimable'] - $meminfo['Shmem'];
+    $result_data["used_programs"] = $result_data["mem_total"] - $result_data["free"] -
+            $result_data["used_buffers"] - $result_data["used_cache"];
     return $result_data;
 }

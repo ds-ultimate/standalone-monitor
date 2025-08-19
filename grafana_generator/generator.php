@@ -1,5 +1,6 @@
 <?php
 
+require_once "../config.php";
 require_once "layouter.php";
 
 require_once "dashboard.php";
@@ -11,14 +12,23 @@ require_once "panelParts/cpuUsagePanel.php";
 require_once "panelParts/memoryUsagePanel.php";
 
 
+$severToGenerate = $SERVER_CONFIGURATION[0];
 $dashboard = new Dashboard();
-
 $globalDatasource = getGlobalDatasource();
+$dashboard->addPanel((new Row($severToGenerate["name"])));
+$availablePanels = $severToGenerate["has"];
 
-$dashboard->addPanel((new Row("Server 1")));
-generateLoadPanel($dashboard, $globalDatasource, $cpuCnt);
-generateCpuUsagePanel($dashboard, $globalDatasource);
-generateMemoryUsagePanel($dashboard, $globalDatasource);
+if(in_array("load", $availablePanels)) {
+    generateLoadPanel($dashboard, $globalDatasource, $severToGenerate["coreCnt"]);
+}
+
+if(in_array("cpu", $availablePanels)) {
+    generateCpuUsagePanel($dashboard, $globalDatasource);
+}
+
+if(in_array("memory", $availablePanels)) {
+    generateMemoryUsagePanel($dashboard, $globalDatasource);
+}
 
 /*
     "diskio" => [

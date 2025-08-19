@@ -4,7 +4,8 @@ require_once "dashboard.php";
 
 class Gauge extends DashboardPanel {
     private Datasource $datasource;
-    private $minMax = null;
+    private $min = null;
+    private $max = null;
     private $unit = null;
     private $fields = "";
 
@@ -17,7 +18,8 @@ class Gauge extends DashboardPanel {
     }
 
     public function setMinMax($min, $max) {
-        $this->minMax = [(int) $min, (int) $max];
+        $this->min = ($min === null)?null:(int) $min;
+        $this->max = ($max === null)?null:(int) $max;
         return $this;
     }
 
@@ -84,9 +86,11 @@ class Gauge extends DashboardPanel {
         }
 
         $tmp = array_merge($tmp, $this->datasource->generate());
-        if($this->minMax !== null) {
-            $tmp["fieldConfig"]["defaults"]["min"] = $this->minMax[0];
-            $tmp["fieldConfig"]["defaults"]["max"] = $this->minMax[1];
+        if($this->min !== null) {
+            $tmp["fieldConfig"]["defaults"]["min"] = $this->min;
+        }
+        if($this->max !== null) {
+            $tmp["fieldConfig"]["defaults"]["max"] = $this->max;
         }
         if($this->unit !== null) {
             $tmp["fieldConfig"]["defaults"]["unit"] = $this->unit;

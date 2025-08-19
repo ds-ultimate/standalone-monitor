@@ -11,11 +11,19 @@ $MYSQL_DB_NAME = "XXXXXXXXXXXXXXXXX";
 $MYSQL_USER_NAME = "XXXXXXXXXXXXXXXXX";
 $MYSQL_USER_PASS = "XXXXXXXXXXXXXXXXX";
 
+// below only necessary for automatic generator
+$GRAFANA_HOST = "localhost:3000";
+$GRAFANA_HOST_EXT = "http://192.168.56.101:3000";
+$GRAFANA_USERNAME = "XXXXXXXXXXXXXXXXX";
+$GRAFANA_PASSWORD = "XXXXXXXXXXXXXXXXX";
+
+
 $SERVER_CONFIGURATION = [
     0 => [
         "name" => "Main Server",
         "key" => "XXXXXXXXXXXXXXXXX",
         "has" => ["cpu", "diskio", "diskusage", "load", "memory", "network", "sql", "ssh"],
+        "coreCnt" => 2,
     ],
 ];
 

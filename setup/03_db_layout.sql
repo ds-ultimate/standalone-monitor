@@ -21,7 +21,6 @@ CREATE TABLE `load` (
 
 CREATE TABLE `memory` (
  `mem_total` bigint(20) NOT NULL,
- `file_cache_size` bigint(20) NOT NULL,
  `used_programs` bigint(20) NOT NULL,
  `used_buffers` bigint(20) NOT NULL,
  `used_cache` bigint(20) NOT NULL,
