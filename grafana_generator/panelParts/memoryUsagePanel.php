@@ -4,7 +4,6 @@ require_once "gauge.php";
 require_once "timeseries.php";
 
 require_once "apiDatasource.php";
-require_once "dashboardDatasource.php";
 
 
 function generateMemoryUsagePanel($dashboard, $baseData) {

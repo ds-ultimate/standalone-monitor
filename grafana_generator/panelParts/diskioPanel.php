@@ -1,10 +1,8 @@
 <?php
 
-require_once "gauge.php";
 require_once "timeseries.php";
 
 require_once "apiNamedDatasource.php";
-require_once "dashboardDatasource.php";
 
 
 function generateDiskioPanel($dashboard, $baseData) {

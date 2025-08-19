@@ -11,6 +11,7 @@ require_once "panelParts/loadPanel.php";
 require_once "panelParts/cpuUsagePanel.php";
 require_once "panelParts/memoryUsagePanel.php";
 require_once "panelParts/diskioPanel.php";
+require_once "panelParts/diskusagePanel.php";
 
 
 $severToGenerate = $SERVER_CONFIGURATION[0];
@@ -35,27 +36,11 @@ if(in_array("diskio", $availablePanels)) {
     generateDiskioPanel($dashboard, $globalDatasource);
 }
 
+if(in_array("diskusage", $availablePanels)) {
+    generateDiskusagePanel($dashboard, $globalDatasource);
+}
+
 /*
-    "diskusage" => [
-        "type" => "array",
-        "columns" => [
-            ["diskname", "diskname", "s"],
-            ["mounted_at", "mounted_at", "s"],
-            ["kb_all", "kbytes_all", "i"],
-            ["kb_used", "kbytes_used", "i"],
-            ["kb_reserved", "kbytes_reserved", "i"],
-            ["in_all", "inodes_all", "i"],
-            ["in_used", "inodes_used", "i"],
-        ],
-    ],
-$dashboard->addPanel((new LayoutRow())
-    ->addPanel(
-        (new Timeseries("Disk Usage"))
-    )
-    ->addPanel(
-        (new Gauge("Disk Usage"))
-    )
-);
     "network" => [
         "type" => "array",
         "columns" => [

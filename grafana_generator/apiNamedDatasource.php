@@ -7,12 +7,14 @@ class APINamedDatasource extends Datasource {
     private $rows;
     private $globalDatasourcePart;
     private $nameRow;
+    private $baseUrl;
 
-    public function __construct($globalDatasourcePart, $table, $nameRow, array $rows) {
+    public function __construct($globalDatasourcePart, $table, $nameRow, array $rows, $baseUrl="namedSeries") {
         $this->table = $table;
         $this->rows = $rows;
         $this->globalDatasourcePart = $globalDatasourcePart;
         $this->nameRow = $nameRow;
+        $this->baseUrl = $baseUrl;
     }
 
     public function generate() {
@@ -78,7 +80,7 @@ class APINamedDatasource extends Datasource {
             die("internal error apiDatasource\n");
         }
 
-        $tmp["targets"][0]["url"] = "namedSeries";
+        $tmp["targets"][0]["url"] = $this->baseUrl;
         $tmp["targets"][0]["url_options"]["params"][] = [
             "key" => "table",
             "value" => $this->table,

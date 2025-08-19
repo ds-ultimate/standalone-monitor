@@ -94,6 +94,9 @@ if($raw_path == "/series") {
 } else if($raw_path == "/namedSeries") {
     require_once "namedSeriesResult.php";
     $convertedData = getNamedSeriesResult($query, $valid_rows);
+} else if($raw_path == "/diskusageNamedSeries") {
+    require_once "diskUsageNamedSeriesResult.php";
+    $convertedData = getDiskUsageNamedSeriesResult($query, $valid_rows);
 } else {
     $convertedData = [];
 }
