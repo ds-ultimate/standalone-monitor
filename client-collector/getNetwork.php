@@ -4,6 +4,7 @@
 
 function get_network_data()
 {
+    global $ALLOWED_NETWORK_INTERFACES;
     /*
      * Netzwerk
      * Interfaces: "ip -oneline link show" oder "ifconfig" oder ls /sys/class/net/
@@ -16,7 +17,7 @@ function get_network_data()
     $result_data = [];
     
     foreach(scandir("/sys/class/net") as $int) {
-        if($int == "." || $int == "..")
+        if(! in_array($int, $ALLOWED_NETWORK_INTERFACES))
             continue;
 
         $result_data[] = [

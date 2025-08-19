@@ -23,6 +23,10 @@ $AVAILABLE_DISKS_USAGE = [
     "/", "/boot", "/boot/efi"
 ];
 
+$ALLOWED_NETWORK_INTERFACES = [
+    "enp0", "virbr0",
+];
+
 $CRON_INTERVAL = 60;
 $SEND_INTERVAL = 1;
 
